@@ -1,0 +1,11 @@
+sudo service mongod start
+
+mongosh
+
+*********
+
+
+sudo systemctl enable mongod
+
+
+systemctl enable mongodb.service
