@@ -1,0 +1,1410 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo cat /var/log/kern.log 
+
+sudo cat /var/log/syslog 
+------------------------
+sudo nano /var/log/kern.log
+
+sudo nano /var/log/syslog
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+Design and Develop SQL DDL statements which demonstrate the use of SQL objects such as Table, View,///////
+create database ass2;
+use ass2;
+create table employee(em_id int,em_name char(20),em_join_date date,primary key(em_id));
+create table emp_finance(pay_id int auto_increment,em_id int, emsalary int,em_contract date, foreign key(em_id) references employee(em_id),primary key(pay_id));
+insert into employee values(1,'ram','2023/10/20');
+insert into employee values(2,'sham','2023/10/21');
+insert into employee values(3,'rakesh','2023/10/22');
+insert into emp_finance values(1,2,2000,'2025/10/20');
+insert into emp_finance values(null,3,4000,'2025/10/20');
+create view EmpDetails
+as
+select e.em_id,e.em_name,f.emsalary
+from employee as e inner join emp_finance as f
+where e.em_id = f.em_id;
+select * from EmpDetails;
+desc employee
+desc emp_finance
+alter table emp_finance add index salary (emsalary);
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+Design at least 10 SQL queries for suitable database application using SQL DML statements: Insert, Select, Update, delete with operators, functions, and////
+-- Create departments table
+CREATE TABLE departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(255)
+);
+
+-- Insert data into departments table
+INSERT INTO departments (department_id, department_name)
+VALUES (1, 'Department 1'), (2, 'Department 2'), (3, 'Department 3');
+
+-- Create employees table
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(255),
+    department_id INT,
+    salary DECIMAL(10, 2)
+);
+
+-- 1. Insert with Values
+INSERT INTO employees (emp_id, emp_name, department_id, salary)
+VALUES (1, 'John Doe', 1, 60000.00), (2, 'Jane Smith', 2, 75000.00);
+
+-- 2. Select with WHERE clause and AND operator
+SELECT emp_id, emp_name, salary
+FROM employees
+WHERE department_id = 1 AND salary > 50000;
+
+-- 3. Update with SET and WHERE clause
+UPDATE employees
+SET salary = salary * 1.1
+WHERE department_id = 2;
+
+-- 4. Delete with WHERE clause and LIKE operator
+DELETE FROM employees
+WHERE emp_name LIKE 'John%';
+
+-- 5. Select with ORDER BY and DESC
+SELECT emp_name, salary
+FROM employees
+ORDER BY salary DESC;
+
+-- 6. Select with GROUP BY and COUNT function
+SELECT department_id, COUNT(emp_id) AS emp_count
+FROM employees
+GROUP BY department_id;
+
+-- 7. Update with CASE statement
+UPDATE employees
+SET salary = CASE
+              WHEN department_id = 1 THEN salary * 1.1
+              WHEN department_id = 2 THEN salary * 1.05
+              ELSE salary
+           END;
+
+-- 8. Delete with IN operator
+DELETE FROM employees
+WHERE department_id IN (1, 3);
+
+-- 9. Select with JOIN and DISTINCT
+SELECT DISTINCT e.emp_name, d.department_name
+FROM employees e
+INNER JOIN departments d ON e.department_id = d.department_id;
+
+-- 10. Select with UNION set operator
+SELECT emp_name, department_id
+FROM employees
+WHERE salary > 60000
+UNION
+SELECT emp_name, department_id
+FROM employees
+WHERE department_id = 2;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+SQL Queries – all types of Join, Sub-Query and View: Write at least10 SQL queries for suitable database application using SQL DML statements./////
+CREATE DATABASE YourDatabaseName;
+USE YourDatabaseName;
+
+CREATE TABLE IF NOT EXISTS departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(255),
+    location VARCHAR(255) -- Add more columns as needed
+);
+
+INSERT INTO departments VALUES
+    (1, 'Department 1', 'City1'),
+    (2, 'Department 2', 'City2'),
+    (3, 'Department 3', 'City3');
+
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(100),
+    department_id INT,
+    salary DECIMAL(10, 2)
+);
+
+
+INSERT INTO employees VALUES
+    (4, 'Alice Johnson', 1, 55000.00),
+    (5, 'Bob Williams', 2, 70000.00);
+
+CREATE TABLE IF NOT EXISTS orders (
+    order_id INT PRIMARY KEY,
+    emp_id INT,
+    order_date DATE,
+    total_amount DECIMAL(10, 2)
+);
+
+INSERT INTO orders VALUES
+    (1, 1, '2023-01-01', 1000.00),
+    (2, 2, '2023-02-01', 1500.00);
+
+-- Query 1: Inner Join
+SELECT employees.emp_id, employees.emp_name
+FROM employees
+INNER JOIN departments ON employees.department_id = departments.department_id;
+
+-- Query 2: Left Join
+SELECT employees.emp_id, employees.emp_name, orders.order_id
+FROM employees
+LEFT JOIN orders ON employees.emp_id = orders.emp_id;
+
+-- Query 3: Right Join
+SELECT orders.order_id, employees.emp_id, employees.emp_name
+FROM orders
+RIGHT JOIN employees ON orders.emp_id = employees.emp_id;
+
+-- Query 4: Full Outer Join (Simulated) sql not support FOJ
+SELECT employees.emp_id, employees.emp_name, orders.order_id
+FROM employees
+LEFT JOIN orders ON employees.emp_id = orders.emp_id
+UNION
+SELECT employees.emp_id, employees.emp_name, orders.order_id
+FROM orders
+LEFT JOIN employees ON orders.emp_id = employees.emp_id
+WHERE employees.emp_id IS NULL;
+
+-- Query 5: Cross Join
+SELECT employees.emp_name, departments.department_name
+FROM employees
+CROSS JOIN departments;
+
+-- Query 6: Sub-Query with IN
+SELECT emp_name, department_id
+FROM employees
+WHERE department_id IN (SELECT department_id FROM departments WHERE location = 'City');
+
+-- Query 7: Sub-Query with EXISTS
+SELECT emp_name, department_id
+FROM employees e
+WHERE EXISTS (SELECT 1 FROM departments d WHERE d.department_id = e.department_id);
+
+-- Query 8: Scalar Sub-Query
+SELECT emp_name, (SELECT AVG(salary) FROM employees) AS avg_salary
+FROM employees;
+
+-- Query 9: View Creation
+CREATE VIEW high_salary_employees AS
+SELECT emp_name, salary
+FROM employees
+WHERE salary > 50000;
+
+-- Query 10: Query using View
+SELECT * FROM high_salary_employees;
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Unnamed PL/SQL code block: Use of Control structure and Exception handling is mandatory. Suggested problem statement: Consider Tables: 
+1. Borrower(Rollno, Name, DateofIssue, NameofBook, Status)////// 
+
+-- Create the borrower table
+CREATE TABLE borrower (
+    rollin INT PRIMARY KEY,
+    name VARCHAR(100),
+    dateofIssue DATE,
+    bname VARCHAR(100),
+    status CHAR(1)
+);
+
+-- Insert sample data into the borrower table
+INSERT INTO borrower VALUES
+    (1, 'a', '2023-11-01', 'java', 'I'),
+    (2, 'b', '2023-10-01', 'networking', 'I'),
+    (3, 'c', '2023-10-10', 'DBMS', 'I'),
+    (4, 'd', '2023-10-01', 'CN', 'I');
+
+-- Create the fine table
+CREATE TABLE fine (
+    roll_no INT,
+    date DATE,
+    amt INT
+);
+
+-- Create the fine_calculation stored procedure
+DELIMITER //
+
+CREATE PROCEDURE fine_calculation(IN rno INT(3), IN bname VARCHAR(100))
+BEGIN
+    DECLARE i_date DATE;
+    DECLARE diff INT;
+    DECLARE fine_amt INT;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SELECT 'Table not Found';
+    END;
+
+    SELECT dateofIssue INTO i_date FROM borrower WHERE rollin = rno AND bname = bname;
+
+    SELECT DATEDIFF(CURDATE(), i_date) INTO diff;
+
+    IF diff > 15 AND diff <= 38 THEN
+        SET fine_amt = diff * 5;
+    ELSEIF diff > 30 THEN
+        SET fine_amt = 15 + 5 + (diff - 30) + 50;
+    ELSE
+        SET fine_amt = 0;
+    END IF;
+
+    INSERT INTO fine VALUES (rno, CURDATE(), fine_amt);
+
+    UPDATE borrower SET status = 'R' WHERE rollin = rno AND bname = bname;
+END //
+
+DELIMITER ;
+
+-- Call the fine_calculation stored procedure
+CALL fine_calculation(1, 'java');
+
+-- Display the contents of the fine table
+SELECT * FROM fine;
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+PL/SQL Stored Procedure and Stored Function. Create the following tables. 
+• Stud_Marks(name, total_marks)//////
+
+CREATE TABLE stud_marks (
+    name1 VARCHAR(50),
+    total_marks INT
+);
+
+-- Insert data into stud_marks
+INSERT INTO stud_marks VALUES
+    ('mayur', 1200),
+    ('mayur2', 120),
+    ('mayur3', 100),
+    ('mayur4', 770),
+    ('mayur5', 900);
+
+-- Create table result
+CREATE TABLE result (
+    rollno INT PRIMARY KEY,
+    name1 VARCHAR(50),
+    class VARCHAR(5)
+);
+
+-- Insert data into result
+INSERT INTO result (rollno, name1) VALUES
+    (1, 'mayur'),
+    (2, 'mayur2'),
+    (3, 'mayur3'),
+    (4, 'mayur4'),
+    (5, 'mayur5');
+
+-- Create procedure p2
+DELIMITER //
+CREATE PROCEDURE p2(IN rno INT)
+BEGIN
+    DECLARE m INT;
+
+    -- Use SELECT INTO to fetch the value into the variable
+    SELECT total_marks INTO m
+    FROM stud_marks
+    WHERE name1 = (SELECT name1 FROM result WHERE rollno = rno);
+
+    -- Use CASE statement to handle the conditional update
+    UPDATE result
+    SET class = CASE
+                    WHEN m >= 990 AND m <= 1500 THEN 'DS'
+                    WHEN m >= 825 AND m <= 899 THEN 'FC'
+                    ELSE 'F'
+                END
+    WHERE rollno = rno;
+END //
+DELIMITER ;
+
+-- Set sql_safe_updates to 0 to allow updates without WHERE clause
+SET sql_safe_updates = 0;
+
+-- Call procedure p2
+CALL p2(1);
+
+-- Select data from result table
+SELECT * FROM result;
+
+-- Reset sql_safe_updates to 1
+SET sql_safe_updates = 1;
+
+-- Create function count1
+DELIMITER //
+CREATE FUNCTION count1(cname VARCHAR(5)) RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE class_count INT;
+
+    SELECT COUNT(*) INTO class_count
+    FROM result
+    WHERE class = cname;
+
+    RETURN class_count;
+END //
+DELIMITER ;
+
+-- Call procedure p2 with a non-existing rollno (6)
+CALL p2(6);
+
+-- Call function count1 to count the occurrences of 'DS' in the result table
+SELECT count1('DS');
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Write a PL/SQL block to create a cursor to copy contents of one table into another. Avoid redundancy. 
+Cursors: (All types: Implicit, Explicit, Cursor FOR Loop, Parameterized Cursor)//// 
+
+create table o_rollcall(rno int primary key, name varchar(50), addr varchar(50));
+
+create table n_rollcall(rno int, name varchar(50), addr varchar(50));
+
+insert into o_rollcall values(1, 'mayur', 'akole'), (2,'uday','pune'), (3,'aditya','up'),
+ (4,'tanuja','bihar'), (5,'arya','mp');
+
+
+insert into n_rollcall values(1, 'mayur', 'akole'), (2,'uday','pune'), (3,'aditya','up');
+
+
+delimiter //
+
+create procedure n1(in rno1 int)
+begin
+declare rno2 int;
+declare exit_cond boolean;
+declare c1 cursor for select rno from o_rollcall where rno>rno1;
+declare continue handler for not found set exit_cond=true;
+open c1;
+
+l1:loop
+
+fetch c1 into rno2;
+if not exists(select * from n_rollcall where rno=rno2) then
+ insert into n_rollcall select * from o_rollcall where rno=rno2;
+
+end if;
+if exit_cond then
+close c1;
+leave l1;
+end if;
+end loop l1;
+end;
+//
+
+delimiter ;
+
+select * from o_rollcall;
+select * from n_rollcall;
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Design the Database Trigger. For All Types Row level and Statement level Triggers, before and After Triggers: 
+Write a database trigger on the Library table.//// 
+
+create table stud(sid int primary key, name char(20), class char(10), age int, issued char(1), bname char(20));
+
+create table returned (sid int, bname char(20), bauthor char(20));
+
+create table issued(sid int, bname char(20));
+
+
+
+delimiter //
+
+create trigger tr_ins_stud 
+before insert
+on stud
+for each row
+begin
+    insert into issued values (new.sid, new.bname);
+end; 
+//
+delimiter ;
+
+
+
+delimiter //
+create trigger tr_del_stud
+after delete
+on stud
+for each row
+begin
+    delete from issued where sid = old.sid;
+end; //
+delimiter ;
+
+
+
+
+
+
+
+delimiter //
+create trigger tr_up_issued
+after update
+on stud
+for each row
+begin
+    update issued
+    set sid = new.sid
+    where sid = old.sid;
+end; //
+delimiter ;
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Design and Develop MongoDB Queries using CRUD operations. (Use CRUD operations,//// 
+
+// Create 'Articles' collection
+db.createCollection('Articles');
+
+// Insert documents
+db.Articles.insertMany([
+  {
+    "Title": "Introduction to MongoDB",
+    "Content": "MongoDB is a NoSQL database.",
+    "Author": "John Doe",
+    "AuthorAge": 30,
+    "Category": "Technology",
+    "Comments": [
+      { "Name": "Alice", "Remarks": "Great article!" },
+      { "Name": "Bob", "Remarks": "I learned a lot." }
+    ]
+  },
+  {
+    "Title": "MongoDB Queries",
+    "Content": "Performing CRUD operations in MongoDB.",
+    "Author": "Jane Smith",
+    "AuthorAge": 25,
+    "Category": "Database",
+    "Comments": [
+      { "Name": "Charlie", "Remarks": "Well-explained." },
+      { "Name": "David", "Remarks": "Very helpful." }
+    ]
+  }
+]);
+
+// Display all documents
+db.Articles.find();
+
+// Update a document
+db.Articles.updateOne(
+  { "Title": "Introduction to MongoDB" },
+  { $set: { "Content": "MongoDB is a powerful NoSQL database." } }
+);
+
+// Display updated document
+db.Articles.find({ "Title": "Introduction to MongoDB" });
+
+// Delete a document
+db.Articles.deleteOne({ "Title": "MongoDB Queries" });
+
+// Display remaining documents
+db.Articles.find();
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+Implement aggregation and indexing with suitable example using MongoDB Create an orders collection with keys order_id, cust_id,//// 
+
+// Create 'orders' collection
+db.createCollection('orders');
+
+// Insert documents into the 'orders' collection
+db.orders.insertMany([
+  {
+    order_id: 1,
+    cust_id: 101,
+    cust_name: 'John Doe',
+    phone_no: ['1234567890', '9876543210'],
+    email_id: 'john@example.com',
+    item_name: 'Product A',
+    DtOfOrder: ISODate("2023-01-01T12:00:00Z"),
+    quantity: 5,
+    amount: 500,
+    status: 'D'
+  },
+  {
+    order_id: 2,
+    cust_id: 102,
+    cust_name: 'Jane Smith',
+    phone_no: ['1112223333'],
+    item_name: 'Product B',
+    DtOfOrder: ISODate("2023-02-15T14:30:00Z"),
+    quantity: 3,
+    amount: 300,
+    status: 'P'
+  },
+  // Add more documents as needed
+]);
+
+// Create an index on the 'cust_name' field
+db.orders.createIndex({ cust_name: 1 });
+
+// Aggregation query to find the total amount for each customer
+db.orders.aggregate([
+  {
+    $group: {
+      _id: "$cust_name",
+      total_amount: { $sum: "$amount" }
+    }
+  }
+]);
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+MongoDB - Map reduces operations: Create an orders collection with fields customer id, order date, status,//// 
+
+// Insert data into 'customer' collection
+db.customer.insert([
+  { Cust_id: "C1", OrderDate: ISODate("2023-01-01T12:00:00Z"), Status: "Pending", Price: 100, Items: ["ProductA"], Quantity: 2 },
+  { Cust_id: "C2", OrderDate: ISODate("2023-01-02T14:30:00Z"), Status: "Delivered", Price: 150, Items: ["ProductB"], Quantity: 1 },
+  // Add more orders as needed
+]);
+
+// Map function
+var map = function () {
+  emit(this.Status, this.Price);
+};
+
+// Reduce function
+var reduce = function (key, values) {
+  return Array.sum(values);
+};
+
+// Run map-reduce operation
+db.customer.mapReduce(
+  map,
+  reduce,
+  {
+    out: { replace: 'mapReduceResult' } // Replace the existing 'mapReduceResult' collection
+  }
+);
+
+// Display the result
+db.mapReduceResult.find();
+  {
+    $group: {
+      _id: "$cust_name",
+      total_amount: { $sum: "$amount" }
+    }
+  }
+]);
+
+                                  -----OR-----
+// Connect to MongoDB (replace connection string with your MongoDB server)
+var conn = new Mongo();
+var db = conn.getDB("pract");
+
+// Insert sample data into the 'orders' collection
+db.orders.insertMany([
+  { cust_name: "Customer1", amount: 100 },
+  { cust_name: "Customer2", amount: 150 },
+  { cust_name: "Customer1", amount: 200 },
+  { cust_name: "Customer3", amount: 120 },
+  // Add more sample data as needed
+]);
+
+// Run the aggregation pipeline to group orders by customer name and calculate total amount
+var result = db.orders.aggregate([
+  {
+    $group: {
+      _id: "$cust_name",
+      total_amount: { $sum: "$amount" }
+    }
+  }
+]);
+
+// Print the result
+printjson(result.toArray());
+
+Save this script to a file with a .js extension (e.g., script.js) and run it in the MongoDB shell using the following command:  mongo script.js
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MySQL Cheat Sheet:
+General Commands:
+Connect to MySQL:
+
+
+mysql -u username -p
+This command connects to MySQL with the specified username and prompts for the password.
+Show Databases:
+
+
+SHOW DATABASES;
+Displays a list of available databases.
+Use Database:
+
+
+USE database_name;
+Switches to the specified database.
+Table Operations:
+Create Table:
+
+
+CREATE TABLE table_name (
+  column1 datatype,
+  column2 datatype,
+  ...
+);
+Creates a new table with specified columns and data types.
+Insert Data:
+
+
+INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...);
+Adds new records to a table.
+Select Data:
+
+
+SELECT * FROM table_name;
+Retrieves all records from a table.
+Update Data:
+
+
+UPDATE table_name SET column1 = value1 WHERE condition;
+Modifies existing records in a table.
+Delete Data:
+
+
+DELETE FROM table_name WHERE condition;
+Removes records from a table based on a condition.
+Advanced Queries:
+Joins:
+
+
+SELECT * FROM table1 INNER JOIN table2 ON table1.column = table2.column;
+Combines records from two tables based on a related column.
+Group By:
+
+
+SELECT column1, COUNT(column2) FROM table_name GROUP BY column1;
+Groups rows that have the same values in specified columns.
+MongoDB Cheat Sheet:
+General Commands:
+Connect to MongoDB:
+
+
+mongo
+Opens the MongoDB shell.
+Database and Collection Operations:
+Show Databases:
+
+
+show dbs
+Lists available databases.
+Use Database:
+
+
+use database_name
+Switches to the specified database.
+Show Collections:
+
+
+show collections
+Displays available collections in the current database.
+Document Operations:
+Insert Document:
+
+
+
+db.collection_name.insert({ key1: value1, key2: value2, ... })
+Adds a new document to a collection.
+Find Documents:
+
+
+db.collection_name.find({ key: value })
+Retrieves documents from a collection based on a query.
+Update Document:
+
+
+db.collection_name.update({ key: value }, { $set: { new_key: new_value } })
+Modifies a document in a collection.
+Delete Document:
+
+
+db.collection_name.remove({ key: value })
+Removes documents from a collection based on a query.
+Advanced Queries:
+Aggregation:
+
+
+db.collection_name.aggregate([ { $group: { _id: "$key", total: { $sum: "$value" } } } ])
+Performs data aggregation operations.
+Indexing:
+
+
+db.collection_name.createIndex({ key: 1 })
+Creates an index on a specified key to improve query performance.
+
+
+
+
+What is DBMS?Software that manages dataAllows user to DEFINE datatypes and constraints, CONSTRUCT (store) data and MAINPULATE data through queries.Hierarchical, Network, RDBMS, OODBMS NOSQL
+
+
+Advantages of DBMSRedundancy of data avoided.Restricted and protected access to data.Permanent/Persistent storage for program objects.Back up recovery services.Efficient query processing.Storage structure and indices for efficient query processing and retrieval.
+
+
+What is DML?Data Manipulation Language.High level non procedural language (SQL).Can be embedded into programming languages.CRUD operations to create, read, update, and delete data
+
+
+Commands of DML INSERT, SELECT, UPDATE and Delete commands.SELECT, INSERT, UPDATE, DELETE, MERGE in SQL
+
+What is primary key?If a relation has many candidate keys, one is chosen arbitrarily to be the primary key.Primary key attributes are underlined.PK used to identify tuple uniquely.
+
+
+What are the types of databases?
+Structured, Unstructured, semi-structured.
+
+
+Types of abstractionInternal Level or Physical Level- Physical storage structure of thedatabaseConceptual or Logical Level- Describes the Database structure of the whole database External or View level- related to the data, which is viewed by specific end users, nearest to the user.
+
+
+What is a candidate key?A relational schema may have > 1 key. Each of these keys is called candidate key
+
+
+
+What is the use of DBMS?optimize and manage the storage and retrieval of data from databasesBusiness, Social network, Science and research, Finance, Airline…
+
+
+
+What are the types of relationships?1:1 One-to-one relationship.1:N One-to-many relationship.M:N Many-to-many relationship
+
+
+What is a relation schema?Description of a relation.consists of the relation’s name, set of attributes/field names/columnnames.set of relational tables and associated items that are related to one another.
+
+
+What is an entity? 
+Basic concept of ER Model.Refers to each specific object in the mini world.Physical or conceptual.Entities have attributes.Weak or Strong entity
+
+
+Types of attributes.Simple and composite.Single values and multivalued.Stored or derived – dotted line. (age derived from DOB)Complex attributes
+
+
+What is entity set?Collection of similar entities. (Same type: either strong or weak)
+
+
+What is weak entity set?An entity set that does not have a primary key.does not contain sufficient attributes to uniquely identify its entities
+
+
+
+Types of inner and outer join (explain too)?Inner Join- Natural Join and EQUI JoinOuter Join- full outer join, left outer, right outer join
+
+
+
+
+Difference between primary and unique key?Unique key is same as that of PK except PK will not accept NULL values whereas Unique key can accept NULL values
+
+
+
+What is normalization?Reducing Null entries. Can’t achieve through ER Diagram.ORSplitting a single table DB (flat file) into multiple tables (relational DB)
+
+
+What is view?A view is the result set of a stored query on the data.hide the complexity that exists in a multiple table join.User can select and perform join without knowing how it actually works.Views can join and simplify multiple tables into a single virtual table
+
+
+What are commands in DCL?GRANTREVOKE
+
+
+
+What is DCL?Data control language (DCL)Similar to a computer programming language used to control access to data stored in a database (Authorization).  (SQL)
+
+
+Why does a database use Inner join types?Returns only those results from the tables that match the specified condition and hides other rows and columns
+
+
+what are entity types?Strong entity type – has key attribute.Weak entity type – no key attribute.Intangible entity type- exists logically not physically.
+
+
+
+Drop vs truncateDROP - remove table definition and its contentsTRUNCATE- delete all the rows from the table
+
+
+
+What relationship in database model?
+a situation that exists between two relational database tables when one table has a foreign key that references the primary key of the other table
+
+
+
+
+What are foreign keys?refers to the field in a table which is the primary key of another table.provides a link between data in two tables
+
+
+
+What is DDL interpreter and DDL Compiler?INTERPRETER- interprets the DDL statements and records the generated statements in the table.COMPILER- processes schema definitions specified in the DDL
+
+
+
+
+Disadvantages of query?No indexesExcessive compiling of stored proceduresComplicated joinsCursors and temporary tables showcase a bad presentation
+
+
+
+Disadvantage of DBMS?Too hugeComplexityCostlyDatabase failure
+
+
+
+Can views have constraints?CheckRead onlyPrimary keyUnique keyForeign key
+
+
+Advantages of DBMS over file systemFlat file system has modification errors because single table.Also, flat file has duplication causing these errors, Relational DB stores data in >1 table => prevents duplication and hence less storage required as well.Relational DB: updates less prone to errors.
+
+
+What is unique key?Set of one or more than one fields/columns of a table that uniquely identify a record in a database table.Allows null constraint.
+
+
+What are different DBMS languages?DDL – Data definition Language1. CREATE2. ALTER3. DROPDML – Data Manipulation Language1. SELECT2. INSERT3. UPDATE4. DELETE5. MERGEDCL – Data Control Language1. GRANT2. REVOKETCL – Transaction Control Language
+
+
+What is database?Collection of dataLogically coherent collectionSpecific purpose
+
+
+What is superkey?Set of attributes with:1. No 2 tuples having same value for SK.
+This condition must hold good in any state.
+
+
+
+What is key?A minimal SK such that removing any one attribute from its set, destroys the uniqueness property.
+
+KEY IS SUPERKEY NOT VICE VERSA
+
+
+
+What is SQL?Sequential Query Language.RDBMS
+
+
+What are integrity constraints?Set of rules that ensure data insertion, updating… maintain data integrity.guard against accidental damage to the database
